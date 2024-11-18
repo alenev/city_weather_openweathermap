@@ -11,8 +11,8 @@ class WeatherRepository implements WeatherRepositoryInterface
         return Weather::all();
     }
 
-    public function getById($id){
-        return Weather::findOrFail($id);
+    public function getByCity($city_name){
+        return Weather::where('city_name', 'like', '%' . strtolower($city_name) . '%')->first();
     }
 
     public function store(array $data){

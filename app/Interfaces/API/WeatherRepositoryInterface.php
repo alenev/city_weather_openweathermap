@@ -5,7 +5,7 @@ namespace App\Interfaces\API;
 interface WeatherRepositoryInterface
 {
     public function index();
-    public function getByCity($id);
+    public function getByCity($city_name);
     public function store(array $data);
     public function update(array $data,$id);
     public function delete($id);
