@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import moment from 'moment';
@@ -9,8 +10,8 @@ import moment from 'moment';
 function getFormattedDates(weatherItems) {
     const firstTimestamp = weatherItems[0]?.timestamp_dt;
     const lastTimestamp = weatherItems[weatherItems.length - 1]?.timestamp_dt;
-    const firstDate = moment(firstTimestamp * 1000).format('YYYY-MM-DD, HH:mm:ss A');
-    const lastDate = moment(lastTimestamp * 1000).format('YYYY-MM-DD, HH:mm:ss A');
+    const firstDate = moment(firstTimestamp * 1000).utc().format('YYYY-MM-DD, HH:mm:ss A');
+    const lastDate = moment(lastTimestamp * 1000).utc().format('YYYY-MM-DD, HH:mm:ss A');
     return { firstDate, lastDate };
 }
 
@@ -27,7 +28,6 @@ export default function ApiWeather({inputValue}){
             const response = await axios.get(`http://127.0.0.1:8000/api/weather/get_open_weather_map_city_data?city_name=${inputValue}`); 
             setweatherItems(response.data.data);
         } catch (error) {
-            console.error('Error fetching weatherItems:', error);
             setError(error.message);
             Swal.fire({
                 icon:"error",
@@ -48,51 +48,85 @@ export default function ApiWeather({inputValue}){
     }
     }, [inputValue]); 
 
+    const saveForecast = async () => {
+        setIsLoading(true);
+        setError(null); 
+        const data = {
+            "timestamp_dt": weatherItems[0].timestamp_dt, 
+            "city_name": weatherItems[0].city_name, 
+            "min_tmp": weatherItems[0].max_tmp, 
+            "max_tmp": weatherItems[0].min_tmp, 
+            "wind_spd": weatherItems[0].wind_spd
+        }
+        try {
+            const url = 'http://127.0.0.1:8000/api/weather/store_open_weather_map_city_data';
+            const response =  await axios.post(url, data)
+            Swal.fire({
+                icon:"warning",
+                text:response.data.message
+            })
+        } catch (error) {
+            setError(error.message);
+            Swal.fire({
+                icon:"warning",
+                text:"Saving forecast error"
+            })
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
         <div>
-        {isLoading ? (
-            <p>Data loading...</p>
-        ) : error ? (
-            <p style={{ color: 'red' }}>Помилка: {error}</p>
-        ) : (
-            <>              
-            {weatherItems.length > 0 && (
-                <>
-                <Container className="mt-3 p-3 border border-1">
-                    <Row>
-                        <Col md={12} className="fs-3 fw-bold">
-                            {inputValue}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={12} className="fs-6">
-                            Period
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={12} className="city_weather_period_info mt-1">
-                            Starts at: {getFormattedDates(weatherItems).firstDate}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md={12} className="city_weather_period_info mt-1">
-                            Ends at: {getFormattedDates(weatherItems).lastDate}
-                        </Col>
-                    </Row>
-                </Container>
-                </>
-            )}
-            
-            {weatherItems.length > 0 && (
-                <table className="table table-bordered mb-5 text-center">
-                    <thead className="text-primary fs-6">
-                    <tr>
-                        <th className="text-primary">Datetime</th>
-                        <th className="text-primary">Min temp</th>
-                        <th className="text-primary">Max temp</th>
-                        <th className="text-primary">Wind speed</th>
-                    </tr>
-                    </thead>
+        {isLoading && (
+            <div className="m-2 row d-flex justify-content-center"> 
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        )}
+		{error && (
+            <div className="m-2 row d-flex justify-content-center text-danger">Error: {error}</div>
+        )}
+        {weatherItems.length > 0 && (
+            <>
+            <Container className="mt-3 p-3 border border-1">
+                <Row>
+                    <Col md={12} className="fs-3 fw-bold">
+                        {weatherItems[0].city_name}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12} className="fs-6">
+                        Period
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12} className="city_weather_period_info mt-1">
+                        Starts at: {getFormattedDates(weatherItems).firstDate}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12} className="city_weather_period_info mt-1">
+                        Ends at: {getFormattedDates(weatherItems).lastDate}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12} className="mt-1">
+                        <button type="button" className="btn btn-success" onClick={saveForecast}>Save forecast</button>
+                    </Col>
+                </Row>                  
+            </Container>
+
+            <table className="table table-bordered mb-5 text-center">
+                <thead className="text-primary fs-6">
+                <tr>
+                    <th className="text-primary">Datetime</th>
+                    <th className="text-primary">Min temp</th>
+                    <th className="text-primary">Max temp</th>
+                    <th className="text-primary">Wind speed</th>
+                </tr>
+                </thead>
                 <tbody>
                     {weatherItems.map((city, key) => (                      
                         <tr className="city_weather_row" key={key}>
@@ -104,9 +138,8 @@ export default function ApiWeather({inputValue}){
                     ))}
                 </tbody>
             </table>
+            </>
             )}
-        </>
-        )}
     </div>
     );
 }
