@@ -16,6 +16,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 #### or run production build (http://localhost:55944)
 - `npm run build`
 - `npm install -g serve`
-- `serve -s buil`
+- `serve -s build`
 
 ### Start Laravel backend REST-API from backend repo branch (https://github.com/alenev/city_weather_openweathermap/tree/backend)
