@@ -62,7 +62,6 @@ class WeatherController extends Controller
         $cityWeatherInDB = $this->weatherRepositoryInterface->getByCity($request->city_name);
         if(!empty($cityWeatherInDB)){
             $updateCityWeatherInDB = $this->update($data, $cityWeatherInDB->id);
-            Log::info("updateCityWeatherInDB ".json_encode($updateCityWeatherInDB)."");
             if($updateCityWeatherInDB){
                 return ApiResponseClass::sendResponse(new WeatherResource($updateCityWeatherInDB),'weather for city '.$request->city_name.' updated in DB',201);
             }else{
@@ -75,7 +74,6 @@ class WeatherController extends Controller
             }else{
                 return ApiResponseClass::sendResponse('','problem with adding weather for city '.$request->city_name.'',500);
             }
-            Log::info("storeCityWeatherInDB ".json_encode($storeCityWeatherInDB)."");
         }
     }
 

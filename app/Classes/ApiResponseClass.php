@@ -4,7 +4,6 @@ namespace App\Classes;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 
 class ApiResponseClass
 {
