@@ -130,9 +130,9 @@ export default function ApiWeather({inputValue}){
                     {weatherItems.map((weatherItem, key) => (                      
                         <tr className="city_weather_row text-start" key={key}>
                         <td className="text-start">{getFormattedTimestamp(weatherItem.timestamp_dt)}</td>
-                        <td className="text-start">{weatherItem.min_tmp}</td>
-                        <td className="text-start">{weatherItem.max_tmp}</td>
-                        <td className="text-start">{weatherItem.wind_spd}</td>
+                        <td className="text-start">{weatherItem.min_tmp} °C</td>
+                        <td className="text-start">{weatherItem.max_tmp} °C</td>
+                        <td className="text-start">{weatherItem.wind_spd} km/h</td>
                         </tr>
                     ))}
                 </tbody>

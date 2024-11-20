@@ -31,7 +31,6 @@ export default function DbWeather({inputValue}){
             setweatherItem(response.data.data);
         } catch (error) {
             setError(error.response.data.message);
-            console.log("error", error);
             Swal.fire({
                 icon:"error",
                 text:error.response.data.message
@@ -90,9 +89,9 @@ export default function DbWeather({inputValue}){
                 <tbody>                 
                         <tr className="city_weather_row">
                         <td className="text-start">{getFormattedTimestamp(weatherItem.timestamp_dt)}</td>
-                        <td className="text-start">{weatherItem.min_tmp}</td>
-                        <td className="text-start">{weatherItem.max_tmp}</td>
-                        <td className="text-start">{weatherItem.wind_spd}</td>
+                        <td className="text-start">{weatherItem.min_tmp} °C</td>
+                        <td className="text-start">{weatherItem.max_tmp} °C</td>
+                        <td className="text-start">{weatherItem.wind_spd} km/h</td>
                         </tr>
                 </tbody>
             </table>
