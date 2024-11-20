@@ -15,6 +15,10 @@ class WeatherRepository implements WeatherRepositoryInterface
         return Weather::where('city_name', 'like', '%' . strtolower($city_name) . '%')->first();
     }
 
+    public function getById($id){
+        return Weather::findOrFail($id);
+    }
+
     public function store(array $data){
         return Weather::create($data);
     }

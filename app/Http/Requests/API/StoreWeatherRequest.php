@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\API\Requests;
+namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Carbon;
 
 class StoreWeatherRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreWeatherRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,11 +25,11 @@ class StoreWeatherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'timestamp_dt' => 'required|date',
+            'timestamp_dt' => 'required|date_format:U',
             'city_name' => 'required|string',
-            'min_tmp' => 'required|decimal',
-            'max_tmp' => 'required|decimal',
-            'wind_spd' => 'required|decimal'
+            'min_tmp' => 'required|between:0,99.99',
+            'max_tmp' => 'required|between:0,99.99',
+            'wind_spd' => 'required|between:0,99.99'
         ];
     }
 

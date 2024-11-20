@@ -15,7 +15,8 @@ class WeatherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'timestamp_dt' =>$this->timestamp_dt,
+            'id' => $this->id,
+            'timestamp_dt' => $this->timestamp_dt,
             'city_name' => $this->city_name,
             'min_tmp' => $this->min_tmp,
             'max_tmp' => $this->max_tmp,

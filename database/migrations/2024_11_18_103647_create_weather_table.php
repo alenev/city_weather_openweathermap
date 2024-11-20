@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('weather', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('timestamp_dt')->nullable();
+            $table->bigInteger('timestamp_dt');
             $table->string('city_name');
             $table->decimal('min_tmp', total: 4, places: 2);
             $table->decimal('max_tmp', total: 4, places: 2);
